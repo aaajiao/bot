@@ -1,4 +1,4 @@
-# crazyplayer
+# Whatever Player
 
 > A Player for Dom Elements
 
