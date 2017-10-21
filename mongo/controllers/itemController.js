@@ -19,10 +19,14 @@ let itemCreatePost = async (req, res, next) => {
     if (req.files && req.files.file) {
       let file = req.files.file
       let fileName = `${item._id}.${file.name.split('.').pop()}`
-      await file.mv(path.resolve(__dirname, '../../static/uploads', fileName))
-      item.file = {
-        name: fileName,
-        mimetype: file.mimetype
+      try {
+        await file.mv(path.resolve(__dirname, '../../static/uploads', fileName))
+        item.file = {
+          name: fileName,
+          mimetype: file.mimetype
+        }
+      } catch (err) {
+        next(err)
       }
     }
     if (req.body.url) {
