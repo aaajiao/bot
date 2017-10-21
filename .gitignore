@@ -14,5 +14,7 @@ dist
 package-lock.json
 
 .nuxt
+
 build
+
 data
