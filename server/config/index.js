@@ -18,7 +18,7 @@ export default {
     }
   },
   server: {
-    port: 3000
+    port: 3001
   },
   static_dir: {
     root: './static',

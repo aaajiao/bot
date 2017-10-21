@@ -12,3 +12,7 @@ dist
 
 # Locker
 package-lock.json
+
+.nuxt
+
+build

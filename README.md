@@ -1,4 +1,4 @@
-# Whatever Player
+# crazyplayer
 
 > A Player for Dom Elements
 
@@ -6,17 +6,17 @@
 
 ``` bash
 # install dependencies
-$ npm install
+$ npm install # Or yarn install
 
-# serve with hot reload at localhost:3000 (run mongodb automaticlly)
-$ npm test
+# serve with hot reload at localhost:3000
+$ npm run dev
 
 # build for production and launch server
 $ npm run build
 $ npm start
 
-# stop (will kill mongodb process)
-$ npm stop 
+# generate static project
+$ npm run generate
 ```
 
 For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).

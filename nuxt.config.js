@@ -57,6 +57,6 @@ module.exports = {
     'font-awesome/css/font-awesome.css'
   ],
   env: {
-    HOST_URL: process.env.HOST_URL || 'http://127.0.0.1:3000'
+    HOST_URL: process.env.HOST_URL || 'http://127.0.0.1:3001'
   }
 }
