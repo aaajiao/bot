@@ -1,34 +1,34 @@
 <template>
-  <div id="stage">
+  <div id="stage" :style="{background: color, width:width+'px', height:height+'px'}">
     <media-container :medias="medias"/>
-    <!--<logo/>-->
-    <!--<h1 class="title">-->
-    <!--crazyplayer-->
-    <!--</h1>-->
-    <!--<h2 class="subtitle">-->
-    <!--A Player for Dom Elements-->
-    <!--</h2>-->
-    <!--<div class="links">-->
-    <!--<a href="https://nuxtjs.org/" target="_blank" class="button&#45;&#45;green">Documentation</a>-->
-    <!--<a href="https://github.com/nuxt/nuxt.js" target="_blank" class="button&#45;&#45;grey">GitHub</a>-->
-    <!--</div>-->
-
   </div>
 </template>
 
 <script>
   import Logo from '~/components/Logo.vue'
   import MediaContainer from '~/components/MediaContainer.vue'
-  import axios from '~/plugins/axios'
 
   export default {
+    auth: false,
     components: {
       MediaContainer,
       Logo
     },
-    async asyncData ({params}) {
-      let {data} = await axios.get(`/api/project/${params.id}`)
-      return {medias: data}
+    async asyncData ({ app, params }) {
+      let { data } = await app.$axios.post(`/api/project/${params.id}`)
+      if (data.endTime && data.link) {
+        setTimeout((link) => {
+          window.location.href = link
+        }, data.endTime, data.link)
+      }
+      return {
+        medias: data.items,
+        color: data.color,
+        width: data.width,
+        height: data.height,
+        endTime: data.endTime,
+        link: data.link
+      }
     }
   }
 </script>
@@ -36,8 +36,6 @@
 <style scoped>
   #stage {
     position: absolute;
-    width: 100vw;
-    height: 100vh;
   }
 
   .container {

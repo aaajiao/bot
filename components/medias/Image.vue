@@ -1,7 +1,13 @@
 <template>
-  <img v-show="show"
+  <a v-if="option.link" v-show="show" target="_blank" :href="option.link" >
+    <img v-show="show"
+         :id="option.id"
+         :style="{width:option.width + 'px',left: option.x+'px', top: option.y+'px', 'z-index':option.zIndex}"
+         :src="option.source">
+  </a>
+  <img v-else v-show="show"
        :id="option.id"
-       :style="{width:option.width + 'px',left: option.x+'px', top: option.y+'px'}"
+       :style="{width:option.width + 'px',left: option.x+'px', top: option.y+'px', 'z-index':option.zIndex}"
        :src="option.source">
 </template>
 

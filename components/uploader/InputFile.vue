@@ -13,7 +13,7 @@
     />
     <span class="file-cta">
       <span class="file-icon">
-        <i class="fa fa-upload"></i>
+        <fa-icon :icon="fas.faUpload"/>
       </span>
       <span class="file-label">
         Choose a file…
@@ -22,6 +22,7 @@
   </label>
 </template>
 <script>
+import { fas } from '@fortawesome/free-solid-svg-icons'
   export default {
     methods: {
       change (e) {
@@ -32,6 +33,11 @@
           parent: this.$parent,
           el: this.$el
         })
+      }
+    },
+    computed: {
+      fas () {
+        return fas // NOT RECOMMENDED
       }
     }
   }

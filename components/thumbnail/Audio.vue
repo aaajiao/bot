@@ -19,6 +19,6 @@
 
 <style scoped>
   audio {
-    width: 100%;
+    width: 100% !important;
   }
 </style>

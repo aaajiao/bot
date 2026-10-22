@@ -1,0 +1,36 @@
+{
+  "created_utc": "2026-10-22T17:16:36.006525+00:00",
+  "purpose": "Static, unmodified public license text for existing artwork iframe references. Original hosts prohibit cross-site framing. No proxying, scripts, tracking, or third-party assets.",
+  "files": [
+    {
+      "slug": "apache-license-2.0",
+      "source": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+      "original_page": "https://www.apache.org/licenses/LICENSE-2.0",
+      "fetched_final_url": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+      "text_bytes": 11358,
+      "text_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "html_sha256": "28a987460e2dcc0e13db2eb7d3d537b1f78a43002a11156d5bede9af3e557da6",
+      "license_text_unmodified": true
+    },
+    {
+      "slug": "vim-license",
+      "source": "https://www.gnu.org/licenses/vim-license.txt",
+      "original_page": "https://www.gnu.org/licenses/vim-license.txt",
+      "fetched_final_url": "https://www.gnu.org/licenses/vim-license.txt",
+      "text_bytes": 13899,
+      "text_sha256": "cfc1edda2b488ecd5b4f1504ea74f5d4a3965d717b5051a51d968ca0b58b3e65",
+      "html_sha256": "2b529b4eafdf790c780e94efc660639a89b900e0ddf2da53edfb8c436f5d0d93",
+      "license_text_unmodified": true
+    },
+    {
+      "slug": "gnu-gpl-3.0",
+      "source": "https://www.gnu.org/licenses/gpl-3.0.txt",
+      "original_page": "https://www.gnu.org/licenses/gpl.html",
+      "fetched_final_url": "https://www.gnu.org/licenses/gpl-3.0.txt",
+      "text_bytes": 35149,
+      "text_sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "html_sha256": "1b7af5d82070edc88edb02e725f8d24dd1834341d63583fdb5157a137790d404",
+      "license_text_unmodified": true
+    }
+  ]
+}

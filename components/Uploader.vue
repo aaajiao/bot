@@ -4,13 +4,12 @@
       <figure class="image">
         <!--<video v-if="fileType==='video'" autoplay controls preload="metadata" ref="container" :src="option.url"></video>-->
         <!--<img :src="option.url" alt="Placeholder image" ref="container">-->
-        <component @aspectUpdate="updateAspect"
+        <component v-if="!isIframe" @aspectUpdate="updateAspect"
                    @durationUpdate="updateDuration"
                    :is="'m-'+fileType"
                    :source="source"
-                   :dW="upData.size.width"
-                   :dH="cHeight"
-                   ref="box"></component>
+                   ref="box"
+                   style="width: 100px; padding-top:20px; margin-left: auto; margin-right: auto;"></component>
         <button class="delete"
                 @click="resetAll"
                 style="position: absolute; top:6px; right:12px;"></button>
@@ -23,17 +22,18 @@
                      v-model="files"
                      post-action="/"
                      :drop="true"
+                     ref="upload"
                      @input-file="inputFile"
                      @input-filter="inputFilter">
         </file-upload>
       </div>
-      <div v-if="isIframe" class="field">
+      <div v-if="isIframe || fileType==='image' || fileType ==='video'" class="field">
         <label class="label">链接</label>
         <p class="control">
           <input class="input"
                  type="text"
-                 @change="setIframeUrl"
-                 :value="source"
+                 @change="setLink"
+                 :value="itemData.link || ''"
                  placeholder="http://">
         </p>
       </div>
@@ -62,43 +62,44 @@
             <div class="field">
               <p class="control">
                 <input class="input" type="number" placeholder="X"
-                       :value="upData.pos.x"
-                       @change="updatePosX">
+                       :value="x"
+                       @change="updateX">
               </p>
             </div>
             <div class="field">
               <p class="control">
                 <input class="input" type="number" placeholder="Y"
-                       :value="upData.pos.y"
-                       @change="updatePosY">
+                       :value="y"
+                       @change="updateY">
               </p>
             </div>
           </div>
         </div>
         <div v-if="type!=='audio'" class="field is-horizontal">
           <div class="field-label is-normal">
-            <label class="label">大小</label>
+            <label class="label">尺寸</label>
           </div>
           <div class="field-body">
             <div class="field">
               <p class="control">
                 <input class="input" type="number" placeholder="width"
-                       :value="upData.size.width"
-                       @change="updateSizeWidth">
+                       :value="width"
+                       @change="updateWidth">
               </p>
             </div>
             <div v-if="isIframe" class="field">
               <p class="control">
                 <input class="input" type="number" placeholder="height"
-                       v-model="cHeight">
+                       :value="height"
+                       @change="updateHeight">
               </p>
             </div>
             <div v-else-if="fileType==='image' || fileType ==='video'" class="field">
               <p class="control">
                 <input class="input" type="number" placeholder="auto"
-                       :value="height"
-                       @change="updateSizeHeight"
-                       disabled>
+                       :value="cHeight"
+                       @change="updateHeight"
+                       readonly>
               </p>
             </div>
           </div>
@@ -109,23 +110,21 @@
           </div>
           <div class="field-body">
             <div class="field">
-              <p class="control has-icons-right">
+              <p class="control">
                 <input class="input"
                        type="number"
-                       v-model="sTimeMin">
-                <span class="icon is-right">
-                  min
-                </span>
+                       placeholder="分"
+                       @change="upSTimeMin"
+                       :value="itemData.sTimeMin">
               </p>
             </div>
             <div class="field">
-              <p class="control has-icons-right">
+              <p class="control">
                 <input class="input"
                        type="number"
-                       v-model="sTimeSec">
-                <span class="icon is-right">
-                  sec
-                </span>
+                       placeholder="秒"
+                       @change="upSTimeSec"
+                       :value="itemData.sTimeSec">
               </p>
             </div>
           </div>
@@ -136,23 +135,19 @@
           </div>
           <div class="field-body">
             <div class="field">
-              <p class="control has-icons-right">
+              <p class="control">
                 <input class="input"
                        type="number"
-                       v-model="eTimeMin">
-                <span class="icon is-right">
-                  min
-                </span>
+                       @change="upETimeMin"
+                       :value="itemData.eTimeMin">
               </p>
             </div>
             <div class="field">
-              <p class="control has-icons-right">
+              <p class="control">
                 <input class="input"
                        type="number"
-                       v-model="eTimeSec">
-                <span class="icon is-right">
-                  sec
-                </span>
+                       @change="upETimeSec"
+                       :value="itemData.eTimeSec">
               </p>
             </div>
           </div>
@@ -189,7 +184,13 @@
   import mNull from '~/components/thumbnail/Null.vue'
 
   export default {
-    props: ['upData'],
+    props: [
+      'x',
+      'y',
+      'width',
+      'height',
+      'itemData'
+    ],
     components: {
       FileUpload,
       'm-image': Image,
@@ -202,28 +203,31 @@
       return {
         fileChanged: false,
         isIframe: false,
-        fileType: this.upData.itemData.type || 'null',
-        source: null,
+        fileType: this.itemData.type || 'null',
+        source: this.itemData.source || null,
+        // link: this.itemData.link || null,
         files: [],
         aspect: 0,
-        cHeight: this.upData.itemData.height || 200,
-        sTimeMin: 0,
-        sTimeSec: 0,
-        eTimeMin: 0,
-        eTimeSec: 0,
+        // cHeight: 200,
+        sTimeMin: this.itemData.sTimeMin || 0,
+        sTimeSec: this.itemData.sTimeSec || 0,
+        eTimeMin: this.itemData.eTimeMin || 0,
+        eTimeSec: this.itemData.eTimeSec || 0,
         duration: 0
       }
     },
     created: function () {
-      let iData = this.upData.itemData
-      if (iData.type === 'iframe') {
-        this.isIframe = true
-      }
-      this.startTime = iData.startTime || 0
-      this.endTime = iData.endTime || 0
-      this.source = this.upData.itemData.source
+      this.isIframe = this.itemData.type === 'iframe'
+      // this.startTime = this.itemData.startTime || 0
+      // this.endTime = this.itemData.endTime || 0
     },
     watch: {
+      fileType: function () {
+        this.$emit('update:fileType', this.fileType)
+      },
+      source: function () {
+        this.$emit('update:source', this.source)
+      },
       isIframe: function (newValue) {
         if (newValue) {
           this.fileType = 'iframe'
@@ -232,6 +236,9 @@
           this.fileType = 'null'
         }
       },
+      // duration: function (val) {
+      //   console.log(val)
+      // },
       startTime: function () {
         if (this.duration > 0) {
           this.endTime = this.startTime + this.duration
@@ -239,12 +246,12 @@
       }
     },
     computed: {
-      height: function () {
+      cHeight: function () {
         let result
         if (this.aspect === 0) {
           result = 0
         } else {
-          result = Math.round(this.upData.size.width / this.aspect)
+          result = Math.round(this.width / this.aspect)
         }
         return result
       },
@@ -279,6 +286,18 @@
       }
     },
     methods: {
+      upSTimeMin: function (e) {
+        this.$emit('update:time', 'sMin', e.target.value)
+      },
+      upSTimeSec: function (e) {
+        this.$emit('update:time', 'sSec', e.target.value)
+      },
+      upETimeMin: function (e) {
+        this.$emit('update:time', 'eMin', e.target.value)
+      },
+      upETimeSec: function (e) {
+        this.$emit('update:time', 'eSec', e.target.value)
+      },
       updateDuration: function (duration) {
         this.duration = duration
       },
@@ -295,28 +314,29 @@
         this.source = null
         this.files = []
         this.aspect = 0
-        this.cHeight = 100
+        // this.cHeight = 100
         this.resetTime()
       },
-      setIframeUrl: function (e) {
+      setLink: function (e) {
         if (/(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/.test(e.target.value)) {
-          this.source = e.target.value
+          this.$emit('update:link', e.target.value)
         }
       },
       updateAspect: function (val) {
+        this.$emit('update:aspect', val)
         this.aspect = val
       },
-      updatePosX: function (e) {
-        this.$emit('update:posX', e.target.value)
+      updateX: function (e) {
+        this.$emit('update:x', e.target.value)
       },
-      updatePosY: function (e) {
-        this.$emit('update:posY', e.target.value)
+      updateY: function (e) {
+        this.$emit('update:y', e.target.value)
       },
-      updateSizeWidth: function (e) {
-        this.$emit('update:sizeW', e.target.value)
+      updateWidth: function (e) {
+        this.$emit('update:width', e.target.value)
       },
-      updateSizeHeight: function (e) {
-        this.$emit('update:sizeH', e.target.value)
+      updateHeight: function (e) {
+        this.$emit('update:height', e.target.value)
       },
       inputFile: function (newFile, oldFile) {
         if (newFile && oldFile && !newFile.active && oldFile.active) {
@@ -354,3 +374,20 @@
     }
   }
 </script>
+
+<style>
+  .swal2-container {
+    z-index: 999999;
+  }
+  figure.image {
+    text-align: center;
+  }
+
+  .label {
+    width: 2rem;
+  }
+
+  input {
+    min-width: 4rem;
+  }
+</style>

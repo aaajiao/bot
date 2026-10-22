@@ -20,7 +20,7 @@
 
 <style scoped>
   video {
-    width: 100%;
+    width: 100% !important;
     object-fit: fill;
   }
 </style>

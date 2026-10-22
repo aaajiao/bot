@@ -1,0 +1,15 @@
+.git
+node_modules
+.env
+.env.*
+config.js
+maintenance-state
+/mongo/
+backups
+logs
+*.log
+work
+coverage
+static/uploads
+!api/mongo/
+!api/mongo/**

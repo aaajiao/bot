@@ -1,8 +1,10 @@
 <template>
-  <div class="wrapper" :style="{left: option.x+'px', top: option.y+'px', height: option.height +'px', visibility: show?'visible':'hidden'}">
-    <iframe :id="option.id"
+  <div class="wrapper"
+       :style="{left: option.x+'px', top: option.y+'px', height: option.height +'px', visibility: show?'visible':'hidden','z-index':option.zIndex}">
+    <iframe sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+            :id="option.id"
             :style="styleObj"
-            :src="option.source">
+            :src="option.link">
     </iframe>
   </div>
 </template>
@@ -16,6 +18,8 @@
       styleObj: function () {
         let ratio = this.option.width / 1000
         return {
+          'background': '#fff',
+          'overflow': 'auto',
           'transform': `scale(${ratio})`,
           '-moz-transform': `scale(${ratio})`,
           '-o-transform': `scale(${ratio})`,
@@ -28,7 +32,7 @@
 
 <style scoped>
   .wrapper {
-    position:absolute;
+    position: absolute;
     padding: 0;
     overflow: hidden;
   }

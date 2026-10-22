@@ -1,8 +1,7 @@
 <template>
   <video v-show="show"
          :width="option.width + 'px'"
-         :height="option.height +'px'"
-         :style="{left: option.x+'px', top: option.y+'px', display:'none'}"
+         :style="{left: option.x+'px', top: option.y+'px', display:'none','z-index':option.zIndex}"
          :src="source">
   </video>
 </template>
