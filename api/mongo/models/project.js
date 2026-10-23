@@ -93,11 +93,8 @@ ProjectSchema
     return '/api/project/update/' + this._id
   })
 
-ProjectSchema.pre('remove', async (next) => {
-  const Item = mongoose.model('Item')
-  const resp = await Item.deleteMany({ project: this._id })
-  next(resp)
-})
+// Deletion is handled by the existing controller. Its query-based deleteOne()
+// never invoked the obsolete document remove hook; do not add a new cascade.
 ProjectSchema.plugin(mongooseLeanVirtuals)
 ProjectSchema.set('toJSON', { virtuals: true })
 module.exports = mongoose.model('Project', ProjectSchema)

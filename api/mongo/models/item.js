@@ -1,7 +1,5 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const path = require('path')
-const del = require('del')
 
 const ItemSchema = Schema({
   TUID: {
@@ -91,12 +89,8 @@ ItemSchema
     return null
   })
 
-ItemSchema.pre('remove', function (next) {
-  if (this.file && this.file.name) {
-    del([path.resolve(__dirname, '../../static/uploads', this.file.name)]).then()
-  }
-  next()
-})
+// Query-based deletion never ran the old document remove hook. Keep media
+// cleanup limited to the existing explicit file-replacement controller.
 
 ItemSchema.set('toJSON', {virtuals: true})
 module.exports = mongoose.model('Item', ItemSchema)

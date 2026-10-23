@@ -1,5 +1,11 @@
 'use strict'
 
+// jiti 0.1 embeds an old v8-compile-cache hook that replaces Node's module
+// compiler with vm.Script without dynamic-import support. MongoDB 7 uses
+// import('os') to build its handshake metadata. Disable that legacy hook before
+// loading Nuxt/jiti so the maintained driver keeps Node24's native compiler.
+process.env.DISABLE_V8_COMPILE_CACHE = '1'
+
 // Nuxt2.14's esm3 hook is incompatible with Node24. Load the project's CommonJS
 // config natively; Nuxt's already-installed jiti handles its ESM-style modules.
 const path = require('path')

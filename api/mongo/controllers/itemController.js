@@ -39,7 +39,7 @@ let itemCreatePost = async (req, res, next) => {
     item.width = req.body.width
     item.height = req.body.height
     item.zIndex = req.body.zIndex
-    item.project = mongoose.mongo.ObjectId(req.body.project_id)
+    item.project = new mongoose.Types.ObjectId(req.body.project_id)
     let result = await item.save()
     res.json({ success: true, message: `item: ${item._id} has been created`, data: result })
   } catch (err) {
@@ -95,7 +95,7 @@ let itemUpdatePost = async (req, res, next) => {
       updateObj.width = req.body.width
       updateObj.height = req.body.height
       updateObj.zIndex = req.body.zIndex
-      updateObj.project = mongoose.mongo.ObjectId(req.body.project_id)
+      updateObj.project = new mongoose.Types.ObjectId(req.body.project_id)
       // console.log(updateObj)
       await item.updateOne({ $set: updateObj })
       mes += `item: ${req.params.id} has been updated!`

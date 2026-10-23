@@ -1,0 +1,34 @@
+# syntax=docker/dockerfile:1
+# Build with --platform linux/amd64. Runtime is a private retained-image recipe;
+# it keeps its existing UI build and never copies private configuration from Git.
+ARG RETAINED_IMAGE=archive-local/bot-node24-compat:20261022
+FROM node:24.22.1-alpine@sha256:06d7adf3e0ef61a13f1d28682726366f97a15aa1888c934d3ecec86c33918b53 AS dependencies
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --production=true --ignore-scripts --ignore-optional --non-interactive \
+    && yarn cache clean
+
+FROM dependencies AS fixture
+RUN apk add --no-cache flock
+COPY api ./api
+COPY test ./test
+ENTRYPOINT ["node"]
+CMD ["--test", "test/mongoose-compatibility.js"]
+
+FROM ${RETAINED_IMAGE} AS runtime
+WORKDIR /app
+# Replace the complete resolved tree so no old mongodb/bson module can win
+# Node's resolution by surviving in an old nested node_modules directory.
+RUN rm -rf /app/node_modules
+COPY --from=dependencies /app/node_modules /app/node_modules
+COPY package.json yarn.lock ./
+COPY api/index.js ./api/index.js
+COPY api/mongo/controllers/itemController.js ./api/mongo/controllers/itemController.js
+COPY api/mongo/models/item.js ./api/mongo/models/item.js
+COPY api/mongo/models/project.js ./api/mongo/models/project.js
+# This unchanged reviewed auth module was previously supplied by a read-only
+# bind and is absent in the original retained image. Keep that bind at rollout.
+COPY api/token-revocations.js ./api/token-revocations.js
+COPY ops/runtime/nuxt-node24.cjs ./ops/runtime/nuxt-node24.cjs
+# Entrypoint/CMD and .nuxt are inherited unchanged. The deployed read-only bind
+# for /app/api/index.js must be switched to this same reviewed source separately.

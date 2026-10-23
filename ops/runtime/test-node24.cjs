@@ -8,6 +8,16 @@ const path = require('path')
 const crypto = require('crypto')
 const { loadConfig, allowLegacyBuildMetadata } = require('./nuxt-node24.cjs')
 
+test('Nuxt startup preserves native dynamic import used by the MongoDB handshake', async () => {
+  assert.equal(process.env.DISABLE_V8_COMPILE_CACHE, '1')
+  require('jiti')(__filename)
+  const driver = path.dirname(require.resolve('mongodb/package.json'))
+  const { resolveRuntimeAdapters } = require(path.join(driver, 'lib/runtime_adapters.js'))
+  const runtime = await resolveRuntimeAdapters({})
+  assert.equal(typeof runtime.os.platform, 'function')
+  assert.equal(runtime.os.platform(), process.platform)
+})
+
 test('start config is production with an explicit container listener', async () => {
   const oldHost = process.env.HOST
   const oldPort = process.env.PORT

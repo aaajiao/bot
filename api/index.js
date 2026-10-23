@@ -30,11 +30,16 @@ const formPost = efp({
 
 const mongoUrl = process.env.MONGO_URL
 mongoose.connect(mongoUrl, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+  // Preserve the old driver's five-connection pool on this small host.
+  maxPoolSize: 5
+}).catch(() => {
+  // Keep startup failure visible to the container restart policy without
+  // logging a connection string or relying on an unhandled rejection.
+  console.error('MongoDB initial connection failed')
+  process.exit(1)
 })
 const db = mongoose.connection
-db.on('error', console.error.bind(console, 'MongoDB connection error:'))
+db.on('error', () => console.error('MongoDB connection error'))
 db.on('connected', () => {
   console.log('Mongoose connected')
 })

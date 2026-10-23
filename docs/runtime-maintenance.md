@@ -1,5 +1,7 @@
 # Node runtime maintenance
 
+This page records the earlier Node-only migration. The subsequent production MongoDB 8.0.34 / FCV 8.0 cutover, full frozen-lock dependency replacement, and acceptance results are documented in [database-driver-upgrade.md](database-driver-upgrade.md). The final Nuxt wrapper also disables jiti's legacy compile-cache hook before loading Nuxt, preserving Node24 dynamic imports used by the new database driver. Full Nuxt-plus-real-database validation passed, and the 57 original UI build files remain unchanged.
+
 This maintenance changes the Node runtime while preserving the installed application dependency versions and existing build artifacts. The baseline is official Node 24.22.1 Alpine, pinned to `sha256:06d7adf3e0ef61a13f1d28682726366f97a15aa1888c934d3ecec86c33918b53`. The [21 October 2026 Node security release](https://nodejs.org/en/blog/vulnerability/october-2026-security-releases) identifies 24.22.1 as a patched release, including the Brotli decoder RCE fix. This statement concerns that runtime patch baseline; it does not certify the old application packages, MongoDB, Docker, or host OS as secure.
 
 ## Two different build claims

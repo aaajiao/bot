@@ -8,9 +8,11 @@
     "dev": "nuxt",
     "build": "node ops/runtime/nuxt-node24.cjs build",
     "start": "node ops/runtime/nuxt-node24.cjs start",
-    "test": "yarn test:node24 && yarn test:auth",
+    "test": "yarn test:node24 && yarn test:auth && yarn test:database",
     "test:node24": "node --test ops/runtime/test-node24.cjs",
-    "test:auth": "node test/auth-hardening.js"
+    "test:auth": "node test/auth-hardening.js",
+    "test:database": "node --test test/mongoose-compatibility.js",
+    "test:database:integration": "node test/mongodb-integration.js"
   },
   "dependencies": {
     "@nuxtjs/auth": "^4.9.1",
@@ -32,8 +34,8 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
-    "mongoose": "^5.11.8",
-    "mongoose-lean-virtuals": "^0.7.5",
+    "mongoose": "9.11.3",
+    "mongoose-lean-virtuals": "2.1.0",
     "nuxt": "^2.14.11",
     "vue": "^2.6.12",
     "vue-color": "^2.7.1",
