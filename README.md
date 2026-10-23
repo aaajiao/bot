@@ -1,27 +1,42 @@
 # Bot Gluttony
 
-A player for DOM elements. This repository now tracks the source actually deployed by the artwork, including its Nuxt 2 interface, project editor and player. Earlier implementations remain in Git history.
+Bot Gluttony is a browser-based editor and player for multimedia artworks. It combines images, video, audio and embedded web pages on a stage, with controls for position, size, layer order and timing. Each project has its own public player page.
+
+The interface describes it as **“A Player for DOM Elements.”** This repository contains the software used by [bot-gluttony.com](https://bot-gluttony.com/). Artwork records and uploaded media are stored separately and are not included in Git.
+
+## Using it
+
+**Visitors:** open a shared project URL, `/<project-id>`, to view the composition. Viewing a project does not require a login.
+
+**Administrators:** sign in at `/login`, then open `/admin` to create or manage projects.
+
+1. Set the project's title, stage dimensions and background colour.
+2. Open its editor at `/admin/<project-id>` and add media or an embedded web page.
+3. Arrange the elements and set their timing, then save.
+4. Use the preview button to open the public player; share that page's URL.
+
+Editing, uploads and deletion require authentication. The editor is built with Nuxt 2 / Vue 2; its Express API stores project and media metadata in MongoDB.
 
 ## Build and run
 
-Use Node 24.22.1 and Yarn 1.22.22.
+Use **Node 24.22.1** and **Yarn 1.22.22**. The deployed database is MongoDB 8.0.34.
 
 ```sh
 yarn install --frozen-lockfile --ignore-optional
 yarn build
+```
+
+Before starting, create a private `.env` using [`.env.example`](.env.example) and set the MongoDB connection, administrator credentials and JWT secret. The authenticated runtime requires Linux with `/usr/bin/flock` and a persistent private directory mounted at `/app/maintenance-state` with mode `0700`. Keep uploads and authentication state persistent and outside Git.
+
+```sh
 yarn start
 ```
 
-Copy `.env.example` to a private `.env` and configure the existing MongoDB and login credentials. Preserve uploaded media outside Git. Bind a persistent private directory to `/app/maintenance-state` (0700); authentication deliberately fails closed if the persistent mount is missing or unreadable. Run behind the documented HTTPS reverse proxy.
+The default port is `3000`. Use these build/start commands, which include the Node 24 compatibility entrypoint. After building, `yarn test:node24` runs the loader and build checks; `yarn test` runs the full offline suite on Linux.
 
-Nuxt remains 2.14.12. A small CommonJS entry point handles its old loader on current Node. Webpack stays on major 4 with the 4.47.0 maintenance release; the OpenSSL legacy provider is not enabled. `yarn.lock` is the sole authoritative dependency lock. See `docs/source-build-node24.md`.
+## Further documentation
 
-## Authentication and archive maintenance
-
-Only exact login and read-only project-detail POST routes allow anonymous access. Editing, deletion and upload require a valid token. Tokens expire after 24 hours and have random identifiers; logout persists a SHA-256 revocation digest until expiry. Revocations use atomic private files, a kernel lock, size/count caps and cleanup. Old unbounded tokens must be replaced by logging in again. Root SSH access is not changed.
-
-Run `yarn test:node24` for build/loader checks. On Linux with `/usr/bin/flock`, run `yarn test:auth` for isolated authorization, expiry, logout, persistence and failure-mode regression tests; database/controllers/uploads are stubbed and no production records are changed.
-
-The artwork's project records and media are not included in Git. Local licence embed copies in `static/archive-embeds/` preserve previously external artwork panels; their manifest records sources. HTTPS redirects preserve paths and queries. Player layout and project content remain unchanged.
-
-`ops/` documents shared certificate renewal, port boundaries and bounded logs for this VPS and its companion Email Trek project. See `docs/runtime-maintenance.md` for private retained-image migration and limitations. Do not publish private retained-server images: they may contain historic runtime configuration. Application framework and database major versions remain unchanged, and old dependencies still need a separate future lifecycle decision.
+- [Source builds and development checks](docs/source-build-node24.md)
+- [Runtime and deployment requirements](docs/runtime-maintenance.md)
+- [MongoDB compatibility, tests and upgrade results](docs/database-driver-upgrade.md)
+- [Shared server operations](ops/shared-host/README.md)

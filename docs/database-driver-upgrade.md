@@ -77,3 +77,5 @@ Keep the old application image, source bind and stopped original database data f
 - [Mongoose server compatibility](https://mongoosejs.com/docs/compatibility.html): the current Mongoose 9 table explicitly includes MongoDB 8; it does not currently establish MongoDB 9 support. This deployment makes no MongoDB 9 compatibility claim.
 - [MongoDB driver compatibility](https://www.mongodb.com/docs/drivers/compatibility/): driver 7.7 and Node24 compatibility, including the tested 4.4 and 8.0 server branches.
 - [MongoDB Node release notes](https://www.mongodb.com/docs/drivers/node/current/reference/release-notes/).
+
+The owner subsequently approved removal of the inactive original database directories and the unused MongoDB4.4.2 image after acceptance. Active MongoDB8 data was preserved. See [the deployment retirement record](../ops/mongodb/DEPLOYMENT.md#owner-approved-retirement-after-acceptance) for the current recovery boundary.
